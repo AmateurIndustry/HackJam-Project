@@ -299,8 +299,8 @@
             
             simulateLoading('progress4');
             setTimeout(() => {
-                // 70% chance of final failure
-                if (Math.random() < 0.7) {
+                // 50% chance of final failure
+                if (Math.random() < 0.5) {
                     document.getElementById('phase4').classList.add('hidden');
                     document.getElementById('finalResult').innerHTML = `
                         <div class="error-message">
@@ -308,7 +308,7 @@
                             <p>Your application could not be processed due to system verification failure.</p>
                             <p><strong>Error Code:</strong> FV-${Math.random().toString(36).substr(2, 8).toUpperCase()}</p>
                             <p>Please return to the main scheduling page and try again.</p>
-                            <button onclick="window.location.href='appointments.html'">Return to Scheduling</button>
+                            <button onclick="window.location.href='index.html'">Return to Scheduling</button>
                         </div>
                     `;
                     document.getElementById('finalResult').classList.remove('hidden');
