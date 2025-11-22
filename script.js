@@ -1,8 +1,7 @@
 function goToForms() {
     // 30% chance of redirecting to wrong page
-    if (Math.random() < 0.3) {
+    if (Math.random() < 0.30) {
         alert("ERROR 418: I'm a teapot.");
-        window.location.href = "appointments.html";
     } else {
         window.location.href = "form.html";
     }
