@@ -1,26 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Appointment Finder</title>
+    <title>Schedule Your Appointment</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .day { padding: 10px; border: 1px solid #ccc; text-align: center; cursor: pointer; }
+        .available { background: #ccffcc; }
+        .unavailable { background: #ffcccc; }
+        .selected { background: #ccccff; border: 2px solid blue; }
+    </style>
 </head>
 <body>
 
-<h1>Find an Appointment</h1>
+<h1>Select Appointment Date</h1>
+<p>Green dates are available. Click to select.</p>
 
-<h3>Next available date: May 2029</h3>
-
-<button onclick="alert('No earlier dates available. Try again in 5 years.')">
-    Show Sooner Appointments
-</button>
-
-<h2 style="margin-top:30px;">Calendar</h2>
-
-<div onclick="randomRedirect()" style="font-size:50px; cursor:pointer;">
-    📅
+<div id="calendar" class="calendar">
+    <!-- Calendar will be generated here -->
 </div>
-<button onclick="startOver()" style="position:absolute; top:10px; left:10px;">← Back</button>
 
-<script src="script.js"></script>
+<div style="margin-top:20px;">
+    <button onclick="submitAppointment()">Schedule Appointment</button>
+    <span id="feedback" style="margin-left:10px;"></span>
+</div>
+
+<script>
+function generateCalendar() {
+    const calendar = document.getElementById('calendar');
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    
+    // Header
+    days.forEach(day => {
+        const header = document.createElement('div');
+        header.style.fontWeight = 'bold';
+        header.textContent = day;
+        calendar.appendChild(header);
+    });
+    
+    // Days - only 10% are actually available
+    for (let i = 1; i <= 35; i++) {
+        const day = document.createElement('div');
+        day.className = 'day';
+        day.textContent = i;
+        
+        const isAvailable = Math.random() < 0.2; // Only 20% available
+        day.classList.add(isAvailable ? 'available' : 'unavailable');
+        
+        if (isAvailable) {
+            day.onclick = function() {
+                // Clear previous selection
+                document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+                this.classList.add('selected');
+            };
+        } else {
+            day.onclick = function() {
+                const messages = [
+                    "This date is blocked for faculty development",
+                    "Advisor is attending a conference",
+                    "University holiday observance",
+                    "Scheduled maintenance day",
+                    "Department retreat"
+                ];
+                alert(messages[Math.floor(Math.random() * messages.length)]);
+            };
+        }
+        
+        calendar.appendChild(day);
+    }
+}
+
+function submitAppointment() {
+    const selected = document.querySelector('.selected');
+    const feedback = document.getElementById('feedback');
+    
+    if (!selected) {
+        feedback.innerHTML = '<span style="color:red;">Please select an available date</span>';
+        return;
+    }
+    
+    // Even if they select an "available" date, 80% chance it fails
+    if (Math.random() < 0.8) {
+        feedback.innerHTML = '<span style="color:red;">Scheduling conflict detected! That date just became unavailable.</span>';
+        selected.classList.remove('available', 'selected');
+        selected.classList.add('unavailable');
+        selected.onclick = null;
+    } else {
+        feedback.innerHTML = '<span style="color:green;">Appointment scheduled! Confirmation email will arrive in 3-5 business days.</span>';
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 3000);
+    }
+}
+
+generateCalendar();
+</script>
+
 </body>
 </html>
